@@ -1,0 +1,19 @@
+current directory: /Users/hiraokouta/dev/rails-chat-app/live-chat-rails/vendor/bundle/ruby/2.7.0/gems/bcrypt-3.1.18/ext/mri
+/Users/hiraokouta/.rbenv/versions/2.7.1/bin/ruby -I /Users/hiraokouta/.rbenv/versions/2.7.1/lib/ruby/2.7.0 -r ./siteconf20220914-12938-khq0cy.rb extconf.rb
+creating Makefile
+
+current directory: /Users/hiraokouta/dev/rails-chat-app/live-chat-rails/vendor/bundle/ruby/2.7.0/gems/bcrypt-3.1.18/ext/mri
+make "DESTDIR=" clean
+
+current directory: /Users/hiraokouta/dev/rails-chat-app/live-chat-rails/vendor/bundle/ruby/2.7.0/gems/bcrypt-3.1.18/ext/mri
+make "DESTDIR="
+compiling bcrypt_ext.c
+compiling crypt_blowfish.c
+clang  -D__SKIP_GNU -I/Users/hiraokouta/.rbenv/versions/2.7.1/include  -D_XOPEN_SOURCE -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT -D_REENTRANT    -c -o x86.o x86.S
+compiling crypt_gensalt.c
+compiling wrapper.c
+linking shared-object bcrypt_ext.bundle
+
+current directory: /Users/hiraokouta/dev/rails-chat-app/live-chat-rails/vendor/bundle/ruby/2.7.0/gems/bcrypt-3.1.18/ext/mri
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 bcrypt_ext.bundle ./.gem.20220914-12938-yj8psb
