@@ -1,0 +1,82 @@
+<template>
+  <div class="container">
+    <NavbarPage />
+    <ChatWindowPage
+      @connectCable="connectCable"
+      :messages="formattedMessages"
+    />
+    <NewChatForm @connectCable="connectCable" />
+  </div>
+</template>
+
+<script>
+import NavbarPage from "../components/NavbarPage.vue";
+import ChatWindowPage from "../components/ChatWindowPage.vue";
+import NewChatForm from "../components/NewChatForm.vue";
+import axios from "axios";
+import ActionCable from "actioncable";
+import  formatDistanceToNow  from 'date-fns'
+import  ja  from 'date-fns/locale'
+export default {
+  components: { NavbarPage, ChatWindowPage, NewChatForm },
+  data() {
+    return {
+      messages: [],
+    };
+  },
+  methods: {
+    async getMessages() {
+      try {
+        const res = await axios.get("http://localhost:3000/messages", {
+          headers: {
+            uid: window.localStorage.getItem("uid"),
+            "access-token": window.localStorage.getItem("access-token"),
+            client: window.localStorage.getItem("client"),
+          },
+        });
+        if (!res) {
+          new Error("メッセージ一覧を取得できませんでした");
+        }
+        this.messages = res.data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    connectCable(message) {
+      this.messageChannel.perform("receive", {
+        message: message,
+        email: window.localStorage.getItem("uid"),
+      });
+    },
+  },
+  computed: {
+    formattedMessages() {
+      if (!this.messages.length) {
+        return [];
+      }
+      return this.messages.map((message) => {
+        let time = formatDistanceToNow(new Date(message.created_at), {
+          locale: ja,
+        });
+        return { ...message, created_at: time };
+      });
+    },
+  },
+  mounted() {
+    const cable = ActionCable.createConsumer("ws://localhost:3000/cable");
+    this.messageChannel = cable.subscriptions.create("RoomChannel", {
+      connected: () => {
+        this.getMessages();
+      },
+      received: () => {
+        this.getMessages();
+      },
+    });
+  },
+  beforeUnmount() {
+    this.messageChannel.unsubscribe();
+  },
+};
+</script>
+
+<style></style>
