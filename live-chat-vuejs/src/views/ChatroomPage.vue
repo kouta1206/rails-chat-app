@@ -4,6 +4,7 @@
     <ChatWindowPage
       @connectCable="connectCable"
       :messages="formattedMessages"
+      ref="chatWindowPage"
     />
     <NewChatForm @connectCable="connectCable" />
   </div>
@@ -15,8 +16,8 @@ import ChatWindowPage from "../components/ChatWindowPage.vue";
 import NewChatForm from "../components/NewChatForm.vue";
 import axios from "axios";
 import ActionCable from "actioncable";
-import  formatDistanceToNow  from 'date-fns'
-import  ja  from 'date-fns/locale'
+import { formatDistanceToNow } from 'date-fns'
+import { ja } from 'date-fns/locale'
 export default {
   components: { NavbarPage, ChatWindowPage, NewChatForm },
   data() {
@@ -64,13 +65,17 @@ export default {
   },
   mounted() {
     const cable = ActionCable.createConsumer("ws://localhost:3000/cable");
-    this.messageChannel = cable.subscriptions.create("RoomChannel", {
+    this.messageChannel = cable.subscriptions.create('RoomChannel', {
       connected: () => {
-        this.getMessages();
+        this.getMessages().then(() => {
+          this.$refs.chatWindowPage.scrollToBottom()
+        })
       },
       received: () => {
-        this.getMessages();
-      },
+        this.getMessages().then(() => {
+          this.$refs.chatWindowPage.scrollToBottom()
+        })
+      }
     });
   },
   beforeUnmount() {
